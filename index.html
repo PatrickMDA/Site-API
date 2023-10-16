@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Jokes in English</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Jokes in English</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <button class="btn btn-secondary" id="random-joke-button">Generate a Joke</button>
+                    </li>
+                    <li class="nav-item">
+                        <a href="Characters/characters.html" class="btn btn-warning">Characters Jokes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="About/aboutme.html" class="btn btn-success">About Me</a>
+                    </li>                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="text-center">
+            <h1 class="display-4">Random Jokes</h1>
+        </div>
+
+        <div class="text-center mt-4">
+            <div class="alert alert-primary" role="alert" id="random-joke">
+                Here the joke of the day will be displayed
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="text-center">
+            <div class="about-me-box">
+                <h2>Jokes in English - O Seu Portal de Diversão com Piadas em Inglês</h2>
+                <p>"Jokes in English" é um site de piadas que busca o seu sorriso diário. Nossa equipe de entusiastas do humor
+                    está empenhada em proporcionar alegria com piadas de alta qualidade. Atualizamos o site diariamente com uma
+                    nova piada a cada minuto, tudo isso de forma gratuita, dedicada apenas ao seu entretenimento. Aqui você
+                    não apenas se diverte rindo com as piadas, você melhora seu inglês, tudo isso porque temos uma API de
+                    diversão, que interage com os principais sites, e encontra as melhores piadas para você passar o seu tempo.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="text-center">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" id="search-input" placeholder="Digite uma Palavra-Chave, para pesquisar sua piada.">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" id="search-button">Search Jokes</button>
+                </div>
+            </div>
+            <div class="alert alert-info" role="alert" id="search-results">
+                Search results will appear here
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        #random-joke-button {
+            background-color: #007bff; /* Blue Bootstrap default */
+            color: #fff;
+            font-weight: bold;
+            border: none;
+        }
+
+        #random-joke-button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        .about-me-box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+        }
+    </style>
+    <script>
+        // Function to fetch a joke from the API
+        function fetchJoke() {
+            // Make an HTTP request to the icanhazdadjoke API
+            axios.get('https://icanhazdadjoke.com/', {
+                headers: { 'Accept': 'application/json' }
+            })
+                .then(function (response) {
+                    const joke = response.data.joke;
+                    $("#random-joke").text(joke);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+        // Function to search for jokes based on a keyword
+        function searchJokes(keyword) {
+            axios.get(`https://icanhazdadjoke.com/search?term=${keyword}`, {
+                headers: { 'Accept': 'application/json' }
+            })
+                .then(function (response) {
+                    const jokes = response.data.results;
+                    const results = jokes.map(joke => joke.joke);
+                    $("#search-results").html(results.join('<br>'));
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+        $(document).ready(function () {
+            // Handle the action of the "Generate a Joke" button
+            $("#random-joke-button").click(function () {
+                fetchJoke();
+            });
+
+            // Handle the action of the "Search Jokes" button
+            $("#search-button").click(function () {
+                const keyword = $("#search-input").val();
+                searchJokes(keyword);
+            });
+
+            // Real-time search as the user types
+            $("#search-input").on('input', function () {
+                const keyword = $(this).val();
+                searchJokes(keyword);
+            });
+        });
+    </script>
+</body>
+
+</html>
